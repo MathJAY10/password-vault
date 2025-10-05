@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { getServerSession } from "next-auth/next";
-import { _authOptionsForInternalUse as authOptions } from "@/app/api/auth/[...nextauth]/route";
-
+import { authOptions } from "@/app/lib/auth";
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json([], { status: 401 });

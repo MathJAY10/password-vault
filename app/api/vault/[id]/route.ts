@@ -2,11 +2,18 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getServerSession } from "next-auth/next";
-import { _authOptionsForInternalUse as authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/lib/auth";
+
+// Helper to get `id` from request URL
+function getIdFromUrl(req: Request) {
+  const url = new URL(req.url);
+  const parts = url.pathname.split("/");
+  return parts[parts.length - 1]; // last segment is the id
+}
 
 // GET single vault item
-export async function GET(req: Request, context: { params: { id: string } }) {
-  const { id } = await context.params;
+export async function GET(req: Request) {
+  const id = getIdFromUrl(req);
 
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -23,8 +30,8 @@ export async function GET(req: Request, context: { params: { id: string } }) {
 }
 
 // DELETE vault item
-export async function DELETE(req: Request, context: { params: { id: string } }) {
-  const { id } = await context.params;
+export async function DELETE(req: Request) {
+  const id = getIdFromUrl(req);
 
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -41,15 +48,14 @@ export async function DELETE(req: Request, context: { params: { id: string } }) 
 }
 
 // PUT (update) vault item
-export async function PUT(req: Request, context: { params: { id: string } }) {
-  const { id } = await context.params;
+export async function PUT(req: Request) {
+  const id = getIdFromUrl(req);
 
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const data = await req.json();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { _id: _, ...rest } = data; // ignore _id
+  const { _id, ...rest } = data; // ignore _id if provided
 
   const client = await clientPromise;
   const db = client.db("vault");

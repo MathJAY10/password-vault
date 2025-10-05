@@ -5,12 +5,20 @@ import PasswordGenerator from "./components/PasswordGenerator";
 import VaultList from "./components/VaultList";
 import { encryptData } from "@/lib/crypto";
 
+type VaultItem = {
+  _id: string;
+  title: string;
+  username: string;
+  password: string;
+  url?: string;
+  notes?: string;
+};
+
 export default function Home() {
   const { data: session, status } = useSession();
   const [newPwd, setNewPwd] = useState("");
-  const [vaultItems, setVaultItems] = useState<any[]>([]);
+  const [vaultItems, setVaultItems] = useState<VaultItem[]>([]);
 
-  // Fetch vault items from API
   const fetchVault = async () => {
     const res = await fetch("/api/vault");
     const data = await res.json();
@@ -48,7 +56,7 @@ export default function Home() {
     });
 
     setNewPwd("");
-    fetchVault(); // refresh vault list
+    fetchVault();
   };
 
   return (
