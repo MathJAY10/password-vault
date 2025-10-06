@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import bcrypt from "bcryptjs";
 
 export default function SignupPage() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -15,33 +14,40 @@ export default function SignupPage() {
     setError(null);
 
     try {
-      // Hash the password before sending to backend
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const res = await fetch("/api/signup", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password: hashedPassword }),
+        body: JSON.stringify({ email, password }), // send plain password
       });
 
+      const text = await res.text();
+      console.log("Signup response raw:", text);
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        console.error("Invalid JSON response:", text);
+        throw new Error("Invalid server response");
+      }
+
       if (!res.ok) {
-        const data: { error: string } = await res.json();
-        setError(data.error || "Something went wrong");
+        setError(data?.error || "Signup failed");
         return;
       }
 
-      // Redirect to login or dashboard
+      alert("Signup successful! Please log in.");
       router.push("/login");
     } catch (err) {
-      setError("Server error");
-      console.error(err);
+      console.error("Signup error:", err);
+      setError("Server error. Please try again.");
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow">
-      <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
-      {error && <p className="text-red-600 mb-2">{error}</p>}
+      <h1 className="text-2xl font-bold mb-4 text-center">Create Account</h1>
+      {error && <p className="text-red-600 mb-2 text-center">{error}</p>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="email"
@@ -59,7 +65,10 @@ export default function SignupPage() {
           required
           className="border p-2 rounded"
         />
-        <button type="submit" className="bg-blue-600 text-white py-2 rounded">
+        <button
+          type="submit"
+          className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
           Sign Up
         </button>
       </form>

@@ -1,6 +1,7 @@
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import clientPromise from "@/lib/mongodb"; // adjust path
+import clientPromise from "@/lib/mongodb";
 
 export const authOptions = {
   providers: [
@@ -30,3 +31,7 @@ export const authOptions = {
   pages: { signIn: "/login" },
   debug: true,
 };
+
+// Only export GET and POST for App Router
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
