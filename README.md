@@ -1,37 +1,52 @@
-Features:
+Install Dependencies:
+npm install
 
-Generate strong passwords with adjustable length, numbers, and symbols (look-alikes excluded).
+Create a .env file in the root folder and add:
+MONGODB_URI=your_mongodb_connection_string
+NEXTAUTH_SECRET=your_random_secret
 
-Sign up / log in with email and password (NextAuth + MongoDB).
 
-Vault items: title, username, password, URL, notes.
+Run the App:
+npm run dev
 
-Client-side encryption ensures passwords are never stored in plaintext.
+How to Use:
+Sign In / Sign Up
 
-View, search, edit, delete vault items.
+If you’re a new user, go to Sign Up.
 
-Copy to clipboard with auto-clear after 15 seconds.
+Enter your email and password to create an account.
 
-Minimal, fast, responsive UI using Next.js + Tailwind CSS.
+After signup, you’ll be redirected to the login page.
 
-Tech Stack:
 
-Front-end: Next.js 13, TypeScript, Tailwind CSS
 
-Back-end: Next.js API routes (Node.js), MongoDB (via mongodb driver)
+Login
 
-Authentication: NextAuth.js (Credentials Provider)
+Enter your registered credentials.
 
-Encryption: CryptoJS (AES, client-side)
+On success, you’ll reach the main dashboard.
 
-Crypto Choice:
 
-We used AES encryption via CryptoJS on the client-side because:
 
-It’s lightweight, fast, and widely used.
 
-Ensures the server never sees plaintext passwords.
+Generate Password
 
-Easy integration with React/Next.js for encrypting/decrypting vault items.
+Click “Generate Password” to create a strong random password.
 
-# password-vault
+Give it a name (title) and save it.
+
+
+Manage Vault
+
+Each password entry has buttons to:
+
+✏️ Edit – update title
+
+📋 Copy – copy password to clipboard
+
+❌ Delete – remove the entry
+
+
+Logout
+
+Use the Logout button at the top to end your session securely.
